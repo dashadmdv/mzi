@@ -86,8 +86,8 @@ def simple_change(text_block: list, keys: list, key_func) -> (str, str):
         enc = move_block_by_table(enc)
         # объединяем выходы таблицы замен в одно 32-битное слово
         enc = int(enc, 2)
-        # сдвигаем слово влево на 11 бит
-        enc = format((enc << 11), '32b')[-32:]
+        # сдвигаем слово влево циклически на 11 бит
+        enc = format((enc << 11) | (enc >> 21), '32b')[-32:]
 
         # левая часть = ксор левой и правой частей
         enc = xor_values(enc, right)
@@ -178,7 +178,7 @@ def encode_file(filename: str, bit_size=None, decode=False):
                 text = input_file.read(block_size)
 
             input_file.close()
-
+    print("Файл расшифрован" if decode else "Файл зашифрован")
     output_file.close()
 
 
